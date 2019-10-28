@@ -27,7 +27,6 @@ namespace INPTPZ1
         {
             try
             {
-
                 int inputNumber = ProcessInputNumberArgument(args[0]);
                 Initialize(inputNumber, inputNumber);
                 MakeImage();
@@ -35,7 +34,7 @@ namespace INPTPZ1
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception \n" + ex);
+                Console.WriteLine(ex);
             }
         }
 
@@ -51,6 +50,12 @@ namespace INPTPZ1
 
         private static void Initialize(int widthParameter, int heightParameter)
         {
+
+            colors = new Color[]
+            {
+                Color.Red, Color.Blue, Color.Green, Color.Yellow, Color.Orange, Color.Fuchsia, Color.Gold, Color.Cyan, Color.Magenta
+            };
+
             pictureWidth = widthParameter;
             pictureHeight = heightParameter;
 
@@ -68,25 +73,20 @@ namespace INPTPZ1
             polynome = CreatePolynome();
             derivatedPolynom = polynome.Derive();
 
-            colors = new Color[]
-            {
-                Color.Red, Color.Blue, Color.Green, Color.Yellow, Color.Orange, Color.Fuchsia, Color.Gold, Color.Cyan, Color.Magenta
-            };
-
             Console.WriteLine(polynome);
             Console.WriteLine(derivatedPolynom);
         }
 
         private static void MakeImage()
         {
-            for (int xCoordinate = 0; xCoordinate < pictureWidth; xCoordinate++)
+            for (int x = 0; x < pictureWidth; x++)
             {
-                for (int yCoordinate = 0; yCoordinate < pictureHeight; yCoordinate++)
+                for (int y = 0; y < pictureHeight; y++)
                 {
                     ComplexNumber complexNumber = new ComplexNumber()
                     {
-                        RealPart = xMinimum + yCoordinate * xStep,
-                        ImaginaryPart = yMinimum + xCoordinate * yStep
+                        RealPart = xMinimum + y * xStep,
+                        ImaginaryPart = yMinimum + x * yStep
                     };
 
                     CheckZeroComplexNumber(complexNumber);
@@ -97,21 +97,20 @@ namespace INPTPZ1
                     int numberOfRoots = 0;
                     FindRoots(complexNumber, ref numberOfRoots);
 
-                    SetPixelInImage(numberOfRoots, iteration, xCoordinate, yCoordinate);
+                    SetPixelInImage(numberOfRoots, iteration, x, y);
                 }
             }
         }
 
-        private static void SetPixelInImage(int numberOfRoots, int iteration, int xCoordinate, int yCoordinate)
+        private static void SetPixelInImage(int numberOfRoots, int iteration, int x, int y)
         {
             Color color = colors[numberOfRoots % colors.Length];
             int red = Math.Min(Math.Max(0, color.R - iteration * 2), 255);
             int blue = Math.Min(Math.Max(0, color.B - iteration * 2), 255);
             int green = Math.Min(Math.Max(0, color.G - iteration * 2), 255);
             color = Color.FromArgb(red, green, blue);
-            bitmapPicture.SetPixel(yCoordinate, xCoordinate, color);
+            bitmapPicture.SetPixel(y, x, color);
         }
-
 
         private static Polynome CreatePolynome()
         {
